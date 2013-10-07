@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require "json"
+require "optparse"
+
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+
+require "yaml_inventory"
+
+options = { :inventory => "hosts.yml" }
+OptionParser.new do |opts|
+  opts.on("-l", "--list")                     { |o| options[:list]       = o }
+  opts.on("-H", "--host HOST")                { |o| options[:host]       = o }
+  opts.on("-i", "--inventory-file INVENTORY") { |o| options[:inventory]  = o }
+  opts.on("-p", "--pretty")                   { |o| options[:pretty]     = o }
+end.parse!
+
+inventory = YAMLInventory.parse_file(options[:inventory], options[:host])
+
+if options[:pretty]
+  puts JSON.pretty_generate inventory
+else
+  puts JSON.generate inventory
+end
