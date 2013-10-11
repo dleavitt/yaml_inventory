@@ -8,11 +8,15 @@ module YAMLInventory
       @groups, @hosts = parse_hosts(inventory)
     end
 
-    def groups
+    def full
       Hash[@groups.map { |g| [g.name, { 
         :hosts => g.get_hosts.map(&:name),
         :vars => g.get_vars,
         :children => g.get_children.map(&:name) }]}]
+    end
+
+    def groups
+      Hash[@groups.map { |g| [g.name, g.get_hosts.map(&:name)] }]
     end
 
     def host(host_name)
